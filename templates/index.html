@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriScan - AI Plant Disease Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Commissioner:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-pattern"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z" fill="currentColor"/>
+                    <circle cx="12" cy="11" r="3" fill="#fff"/>
+                </svg>
+                <span class="logo-text">AgriScan</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Scan</a>
+                <a href="/about" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a6 6 0 100 12 6 6 0 000-12zm0 10a4 4 0 110-8 4 4 0 010 8z"/>
+                        </svg>
+                        <span>AI-Powered Detection</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Protect Your Crops with
+                        <span class="gradient-text">Smart Detection</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Upload a leaf image and get instant disease diagnosis with expert treatment recommendations
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">38+</div>
+                            <div class="stat-label">Diseases</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">90%</div>
+                            <div class="stat-label">Accuracy</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">&lt;5s</div>
+                            <div class="stat-label">Detection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="container">
+                <div class="upload-card">
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <div class="upload-content">
+                            <div class="upload-icon-wrapper">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5m0 0L7 8m5-5v12" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="upload-title">Drop your leaf image here</h3>
+                            <p class="upload-subtitle">or click to browse</p>
+                            <div class="upload-info">
+                                <span>PNG, JPG up to 16MB</span>
+                            </div>
+                            <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"/>
+                                </svg>
+                                Select Image
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Section -->
+        <section class="loading-section" id="loadingSection" style="display: none;">
+            <div class="container">
+                <div class="loading-card">
+                    <div class="loader">
+                        <div class="leaf-loader">
+                            <svg viewBox="0 0 100 100">
+                                <path d="M50 10 Q70 30, 50 50 Q30 30, 50 10Z" fill="currentColor"/>
+                                <path d="M50 50 Q70 70, 50 90 Q30 70, 50 50Z" fill="currentColor" opacity="0.6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3>Analyzing your plant...</h3>
+                    <p>Our AI is examining the leaf for disease markers</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <div class="container">
+                <div class="results-grid">
+                    <!-- Image Preview -->
+                    <div class="result-card image-card">
+                        <div class="card-header">
+                            <h3>Uploaded Image</h3>
+                        </div>
+                        <div class="image-preview">
+                            <img id="previewImage" src="" alt="Plant preview">
+                        </div>
+                    </div>
+
+                    <!-- Diagnosis Card -->
+                    <div class="result-card diagnosis-card">
+                        <div class="card-header">
+                            <h3>Diagnosis</h3>
+                            <div class="status-badge" id="statusBadge">
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                </svg>
+                                <span>Detected</span>
+                            </div>
+                        </div>
+                        <div class="diagnosis-content">
+                            <div class="disease-name-wrapper">
+                                <label>Condition</label>
+                                <h2 class="disease-name" id="diseaseName">-</h2>
+                            </div>
+                            <div class="confidence-wrapper">
+                                <label>Confidence Level</label>
+                                <div class="confidence-display">
+                                    <div class="confidence-circle">
+                                        <svg class="circle-progress" viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                                            <circle id="progressCircle" cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="8" stroke-linecap="round"/>
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:#10b981"/>
+                                                    <stop offset="100%" style="stop-color:#059669"/>
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                        <div class="confidence-number" id="confidenceText">0%</div>
+                                    </div>
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" id="confidenceFill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treatment Card -->
+                <div class="treatment-card">
+                    <div class="card-header">
+                        <h3>Treatment & Prevention</h3>
+                    </div>
+                    <div class="treatment-content">
+                        <div class="treatment-section">
+                            <div class="section-icon">ℹ️</div>
+                            <div class="section-content">
+                                <h4>About This Condition</h4>
+                                <p id="diseaseDescription">-</p>
+                            </div>
+                        </div>
+                        <div class="treatment-section">
+                            <div class="section-icon">💊</div>
+                            <div class="section-content">
+                                <h4>Treatment Steps</h4>
+                                <ul id="treatmentList" class="treatment-list"></ul>
+                            </div>
+                        </div>
+                        <div class="treatment-section">
+                            <div class="section-icon">🛡️</div>
+                            <div class="section-content">
+                                <h4>Prevention Tips</h4>
+                                <ul id="preventionList" class="prevention-list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="resetUpload()">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                        </svg>
+                        Scan Another Plant
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <svg class="footer-logo" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z" fill="currentColor"/>
+                        <circle cx="12" cy="11" r="3" fill="#fff"/>
+                    </svg>
+                    <span>AgriScan</span>
+                </div>
+                <p class="footer-text">Empowering farmers with AI-driven plant disease detection</p>
+                <p class="footer-copyright">&copy; 2024 AgriScan. Protecting crops worldwide.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
